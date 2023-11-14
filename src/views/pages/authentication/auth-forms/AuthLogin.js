@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -34,6 +34,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import Google from 'assets/images/icons/social-google.svg';
+import httpService, { endpoints } from 'utils/httpService';
+
+import * as actionTypes from '../../../../store/actions';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -43,6 +46,7 @@ const FirebaseLogin = ({ ...others }) => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state) => state.customization);
   const [checked, setChecked] = useState(true);
+  const dispatch = useDispatch();
 
   const googleHandler = async () => {
     console.error('Login');
@@ -60,7 +64,7 @@ const FirebaseLogin = ({ ...others }) => {
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <AnimateButton>
             <Button
               disableElevation
@@ -80,7 +84,7 @@ const FirebaseLogin = ({ ...others }) => {
               Sign in with Google
             </Button>
           </AnimateButton>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Box
             sx={{
@@ -88,9 +92,9 @@ const FirebaseLogin = ({ ...others }) => {
               display: 'flex'
             }}
           >
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
+            {/* <Divider sx={{ flexGrow: 1 }} orientation="horizontal" /> */}
 
-            <Button
+            {/* <Button
               variant="outlined"
               sx={{
                 cursor: 'unset',
@@ -106,9 +110,9 @@ const FirebaseLogin = ({ ...others }) => {
               disabled
             >
               OR
-            </Button>
+            </Button> */}
 
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
+            {/* <Divider sx={{ flexGrow: 1 }} orientation="horizontal" /> */}
           </Box>
         </Grid>
         <Grid item xs={12} container alignItems="center" justifyContent="center">
@@ -120,7 +124,7 @@ const FirebaseLogin = ({ ...others }) => {
 
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
+          email: '',
           password: '123456',
           submit: null
         }}
@@ -133,6 +137,18 @@ const FirebaseLogin = ({ ...others }) => {
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
+              const res = await httpService({
+                base: endpoints.auth.base,
+                endpoint: endpoints.auth.login,
+                reqBody: {
+                  email: values.email,
+                  password: values.password
+                }
+              })
+              dispatch({
+                type: actionTypes.LOGIN_USER,
+                payload: res
+              })
             }
           } catch (err) {
             console.error(err);

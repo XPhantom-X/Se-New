@@ -18,6 +18,14 @@ const dashboard = {
       url: '/dashboard/default',
       icon: icons.IconDashboard,
       breadcrumbs: false
+    },
+    {
+      id: 'default',
+      title: 'Taha Page',
+      type: 'item',
+      url: '/utils/taha-page',
+      icon: icons.IconDashboard,
+      breadcrumbs: false
     }
   ]
 };

@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import TahaPage from 'views/utilities/TahaPage';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -42,6 +43,10 @@ const MainRoutes = {
         {
           path: 'util-typography',
           element: <UtilsTypography />
+        },
+        {
+          path: "taha-page",
+          element: <TahaPage />
         }
       ]
     },
