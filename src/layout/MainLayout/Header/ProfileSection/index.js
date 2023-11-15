@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -38,6 +38,7 @@ import User1 from 'assets/images/users/user-round.svg';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { LOGOUT_USER } from 'store/actions';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -56,8 +57,10 @@ const ProfileSection = () => {
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     console.log('Logout');
+    dispatch({type:LOGOUT_USER})
   };
 
   const handleClose = (event) => {

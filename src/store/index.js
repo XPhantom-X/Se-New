@@ -1,5 +1,6 @@
 import { applyMiddleware, createStore } from 'redux';
 import reducer from './reducer';
+import { compose } from 'redux';
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 

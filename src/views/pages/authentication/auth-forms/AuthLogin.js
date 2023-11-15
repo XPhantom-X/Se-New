@@ -46,7 +46,9 @@ const FirebaseLogin = ({ ...others }) => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state) => state.customization);
   const [checked, setChecked] = useState(true);
+  const [token, setToken] = useState();
   const dispatch = useDispatch();
+
 
   const googleHandler = async () => {
     console.error('Login');
@@ -124,8 +126,8 @@ const FirebaseLogin = ({ ...others }) => {
 
       <Formik
         initialValues={{
-          email: '',
-          password: '123456',
+          email: 'example@mail.com',
+          password: '12345678',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -134,6 +136,7 @@ const FirebaseLogin = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
@@ -146,11 +149,11 @@ const FirebaseLogin = ({ ...others }) => {
                 }
               })
               if (res) {
-                dispatch({
-                  type: actionTypes.LOGIN_USER,
-                  payload: res
-                })
-              }
+              dispatch({
+                type: actionTypes.LOGIN_USER,
+                payload: res
+              })
+            }
             }
           } catch (err) {
             console.error(err);
