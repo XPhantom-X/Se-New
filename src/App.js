@@ -11,6 +11,7 @@ import themes from 'themes';
 
 // project imports
 import NavigationScroll from 'layout/NavigationScroll';
+import { NotificationContainer } from 'react-notifications';
 
 // ==============================|| APP ||============================== //
 
@@ -21,6 +22,7 @@ const App = () => {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themes(customization)}>
         <CssBaseline />
+        <NotificationContainer />
         <NavigationScroll>
           <Routes />
         </NavigationScroll>

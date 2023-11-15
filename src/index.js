@@ -11,6 +11,7 @@ import { store } from 'store';
 
 // style + assets
 import 'assets/scss/style.scss';
+import 'react-notifications/lib/notifications.css';
 import config from './config';
 
 // ==============================|| REACT DOM RENDER  ||============================== //

@@ -145,10 +145,12 @@ const FirebaseLogin = ({ ...others }) => {
                   password: values.password
                 }
               })
-              dispatch({
-                type: actionTypes.LOGIN_USER,
-                payload: res
-              })
+              if (res) {
+                dispatch({
+                  type: actionTypes.LOGIN_USER,
+                  payload: res
+                })
+              }
             }
           } catch (err) {
             console.error(err);
