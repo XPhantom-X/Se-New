@@ -4,6 +4,8 @@ import config from 'config';
 // action - state management
 import * as actionTypes from './actions';
 
+
+
 export const initialState = {
   userDetails: {},
   token: "",
@@ -21,6 +23,15 @@ const userReducer = (state = initialState, action) => {
         ...action.payload,
         loggedIn: true
       };
+      case 'UPDATE_USER_DETAILS':
+      return {
+        ...state,
+        userDetails: {
+          ...state.userDetails,
+          ...action.payload,
+        },
+      };
+     
     case actionTypes.LOGOUT_USER:
       return {
         ...state,
