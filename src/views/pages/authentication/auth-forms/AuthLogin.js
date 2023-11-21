@@ -48,6 +48,8 @@ const FirebaseLogin = ({ ...others }) => {
   const [checked, setChecked] = useState(true);
   const [token, setToken] = useState();
   const dispatch = useDispatch();
+  const role = useSelector(state=>state.user.userDetails.role);
+ 
 
 
   const googleHandler = async () => {

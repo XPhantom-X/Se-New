@@ -4,6 +4,8 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import TahaPage from 'views/utilities/TahaPage';
+import Edit_page from 'views/EditPage/Edit_page';
+import Viewprofile from 'views/ProfileView/Viewprofile';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -89,6 +91,14 @@ const MainRoutes = {
     {
       path: 'sample-page',
       element: <SamplePage />
+    },
+    {
+      path: 'Edit_page',
+      element: <Edit_page />
+    },
+    {
+      path: 'Viewprofile',
+      element: <Viewprofile />
     }
   ]
 };

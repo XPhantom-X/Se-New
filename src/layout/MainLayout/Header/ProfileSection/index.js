@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch} from 'react-redux';
-
+import { Link } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -248,7 +248,7 @@ const ProfileSection = () => {
                             mt: 0.5
                           }
                         }}
-                      >
+                      > <Link to='Edit_page'>
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
@@ -257,8 +257,10 @@ const ProfileSection = () => {
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
-                          <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
+                          <ListItemText primary={<Typography variant="body2">Edit Profile</Typography>} />
                         </ListItemButton>
+                        </Link>
+                        <Link to='Viewprofile'>
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 1}
@@ -271,7 +273,7 @@ const ProfileSection = () => {
                             primary={
                               <Grid container spacing={1} justifyContent="space-between">
                                 <Grid item>
-                                  <Typography variant="body2">Social Profile</Typography>
+                                  <Typography variant="body2">View Profile</Typography>
                                 </Grid>
                                 <Grid item>
                                   <Chip
@@ -287,6 +289,7 @@ const ProfileSection = () => {
                             }
                           />
                         </ListItemButton>
+                        </Link>
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}

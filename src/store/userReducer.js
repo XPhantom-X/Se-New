@@ -10,6 +10,7 @@ export const initialState = {
   loggedIn: false
 };
 
+
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
 
 const userReducer = (state = initialState, action) => {
