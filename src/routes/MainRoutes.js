@@ -6,6 +6,7 @@ import Loadable from 'ui-component/Loadable';
 import TahaPage from 'views/utilities/TahaPage';
 import Edit_page from 'views/EditPage/Edit_page';
 import Viewprofile from 'views/ProfileView/Viewprofile';
+import Searchlist from 'layout/MainLayout/Header/SearchSection/Searchlist';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -45,10 +46,6 @@ const MainRoutes = {
         {
           path: 'util-typography',
           element: <UtilsTypography />
-        },
-        {
-          path: "taha-page",
-          element: <TahaPage />
         }
       ]
     },
@@ -99,6 +96,10 @@ const MainRoutes = {
     {
       path: 'Viewprofile',
       element: <Viewprofile />
+    },
+    {
+      path: 'Searchlist',
+      element: <Searchlist />
     }
   ]
 };

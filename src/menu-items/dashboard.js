@@ -1,6 +1,7 @@
 // assets
 import { IconDashboard } from '@tabler/icons';
 
+
 // constant
 const icons = { IconDashboard };
 
@@ -23,7 +24,7 @@ const dashboard = {
       id: 'default',
       title: 'Taha Page',
       type: 'item',
-      url: '/utils/taha-page',
+      url: '/Searchlist',
       icon: icons.IconDashboard,
       breadcrumbs: false
     }

@@ -2,8 +2,11 @@ import React from "react";
 
 const TahaPage = () => {
     return (
-        <h1>my name is Taha</h1>
-    )
-}
-
-export default TahaPage;
+    //   results.map((result) => {
+    //     return <div key={result[0]._id}>{result[0].firstName}</div>;
+    //   })
+    <div>Hello</div>
+    );
+  };
+  
+  export default TahaPage;

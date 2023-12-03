@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import React, { useEffect } from 'react';
+import httpService, { endpoints } from 'utils/httpService';
+
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -14,6 +17,14 @@ import Transitions from 'ui-component/extended/Transitions';
 // assets
 import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons';
 import { shouldForwardProp } from '@mui/system';
+import Searchlist from './Searchlist';
+// import { Routes } from 'react-router';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
+
+
 
 // styles
 const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
@@ -115,51 +126,69 @@ MobileSearch.propTypes = {
 
 // ==============================|| SEARCH INPUT ||============================== //
 
+// ... (existing imports)
+
+// rest of the code...
+
+
+
+
 const SearchSection = () => {
   const theme = useTheme();
   const [value, setValue] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const num = 0;
+  const nav = useNavigate();
+
+  const handleSearch = async (searchText) => {
+    try {
+      setLoading(true);
+
+      // Make a request to the backend API
+      const res = await httpService({
+        base: endpoints.appointments.base,
+        endpoint: endpoints.appointments.search,
+        reqBody: {
+          keyword: searchText
+        }
+      })
+      if (res) {
+        setSearchResults(res);
+      }
+      console.log(searchResults[0].department)
+      
+  
+
+      // setSearchResults(data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
+  function gotosearchlist(){
+    nav("/Searchlist",{state:{res:searchResults }});
+
+  }
+
+  useEffect(() => {
+    if (value.trim() !== '') {
+      handleSearch(value);
+    } else {
+      // Clear search results when the search bar is empty
+      setSearchResults([]);
+    }
+  }, [value]);
 
   return (
     <>
+      {/* ... (existing code) */}
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-        <PopupState variant="popper" popupId="demo-popup-popper">
-          {(popupState) => (
-            <>
-              <Box sx={{ ml: 2 }}>
-                <ButtonBase sx={{ borderRadius: '12px' }}>
-                  <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
-                    <IconSearch stroke={1.5} size="1.2rem" />
-                  </HeaderAvatarStyle>
-                </ButtonBase>
-              </Box>
-              <PopperStyle {...bindPopper(popupState)} transition>
-                {({ TransitionProps }) => (
-                  <>
-                    <Transitions type="zoom" {...TransitionProps} sx={{ transformOrigin: 'center left' }}>
-                      <Card
-                        sx={{
-                          background: '#fff',
-                          [theme.breakpoints.down('sm')]: {
-                            border: 0,
-                            boxShadow: 'none'
-                          }
-                        }}
-                      >
-                        <Box sx={{ p: 2 }}>
-                          <Grid container alignItems="center" justifyContent="space-between">
-                            <Grid item xs>
-                              <MobileSearch value={value} setValue={setValue} popupState={popupState} />
-                            </Grid>
-                          </Grid>
-                        </Box>
-                      </Card>
-                    </Transitions>
-                  </>
-                )}
-              </PopperStyle>
-            </>
-          )}
-        </PopupState>
+        {/* ... (existing code) */}
       </Box>
       <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <OutlineInputStyle
@@ -174,17 +203,36 @@ const SearchSection = () => {
           }
           endAdornment={
             <InputAdornment position="end">
-              <ButtonBase sx={{ borderRadius: '12px' }}>
+          
+              
+           
+            <ButtonBase  onClick={gotosearchlist} sx={{ borderRadius: '12px' }}>
                 <HeaderAvatarStyle variant="rounded">
                   <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
                 </HeaderAvatarStyle>
               </ButtonBase>
+             
+             
             </InputAdornment>
           }
           aria-describedby="search-helper-text"
           inputProps={{ 'aria-label': 'weight' }}
         />
+
+        {/* Display search results */}
+
+        {/* <TahaPage results={searchResults}/> */}
+         
+          {/* <Routes>
+            <Route exact path='/Searchlist'>
+              <Searchlist results={searchResults} />
+            </Route>
+          </Routes> */}
+      
+          
       </Box>
+
+
     </>
   );
 };
