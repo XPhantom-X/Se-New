@@ -3,10 +3,10 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
-import TahaPage from 'views/utilities/TahaPage';
 import Edit_page from 'views/EditPage/Edit_page';
 import Viewprofile from 'views/ProfileView/Viewprofile';
 import Searchlist from 'layout/MainLayout/Header/SearchSection/Searchlist';
+import ViewCalender from 'layout/MainLayout/Header/SearchSection/ViewCalender';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
@@ -100,6 +100,10 @@ const MainRoutes = {
     {
       path: 'Searchlist',
       element: <Searchlist />
+    },
+    {
+      path: 'ViewCalender',
+      element: <ViewCalender />
     }
   ]
 };
