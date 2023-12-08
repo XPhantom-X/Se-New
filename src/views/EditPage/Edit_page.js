@@ -18,42 +18,18 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { updateUserDetails } from 'store/actions';
+import httpService, { endpoints } from 'utils/httpService';
 
 const Edit_page = ({ ...others }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.user.userDetails);
+  const role = userDetails.role;
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [course, setCourse] = useState('');
-  const [ofhr, setOfhr] = useState('');
-
-  useEffect(() => {
-    // Set initial state values when component mounts
-    setFirstName(userDetails.firstName);
-    setLastName(userDetails.lastName);
-    setEmail(userDetails.email);
-    setCourse(userDetails.coursesAssigned);
-    setOfhr(userDetails.officeHours);
-  }, [userDetails]);
-
-  const handleupdate = () => {
-    dispatch(
-      updateUserDetails({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        officeHours: ofhr,
-        coursesAssigned: course,
-      })
-    );
-  };
-
-  let role = useSelector((state) => state.user.userDetails.role);
-
-  const officeHourOptions = [userDetails.officeHours];
+  const [ofhr, setOfhr] = useState({
+    day: "",
+    slot: ""
+  });
 
   return (
     <>
@@ -67,8 +43,7 @@ const Edit_page = ({ ...others }) => {
           email: userDetails.email,
           department: userDetails.department,
           course: userDetails.coursesAssigned,
-          officeHoursStart: userDetails.officeHours,
-          officeHoursEnd: userDetails.officeHours,
+          officeHours: userDetails.officeHours,
           submit: null,
         }}
         enableReinitialize={true}
@@ -80,6 +55,13 @@ const Edit_page = ({ ...others }) => {
             // Your submission logic goes here
             setStatus({ success: true });
             setSubmitting(false);
+            const res = await httpService({
+              base: endpoints.auth.base,
+              endpoint: endpoints.auth.updateProfile,
+              reqBody: values,
+              successNotif: true
+            })
+            if (res) { }
           } catch (err) {
             console.error(err);
             setStatus({ success: false });
@@ -88,7 +70,7 @@ const Edit_page = ({ ...others }) => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleChange, setFieldValue, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             {/* First Name Field */}
             <FormControl fullWidth error={Boolean(touched.firstName && errors.firstName)} sx={{ ...theme.typography.customInput }}>
@@ -100,7 +82,6 @@ const Edit_page = ({ ...others }) => {
                 name="firstName"
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setFirstName(e.target.value);
                   handleChange(e);
                 }}
                 label="Change First Name"
@@ -123,7 +104,6 @@ const Edit_page = ({ ...others }) => {
                 name="lastName"
                 onBlur={handleBlur}
                 onChange={(e) => {
-                  setLastName(e.target.value);
                   handleChange(e);
                 }}
                 label="Change Last Name"
@@ -132,29 +112,6 @@ const Edit_page = ({ ...others }) => {
               {touched.lastName && errors.lastName && (
                 <FormHelperText error id="standard-weight-helper-text-lastName-login">
                   {errors.lastName}
-                </FormHelperText>
-              )}
-            </FormControl>
-
-            {/* Email Field */}
-            <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-              <InputLabel htmlFor="outlined-adornment-email-login">Change Email</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-email-login"
-                type="email"
-                value={values.email}
-                name="email"
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  handleChange(e);
-                }}
-                label="Change Email"
-                inputProps={{}}
-              />
-              {touched.email && errors.email && (
-                <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email}
                 </FormHelperText>
               )}
             </FormControl>
@@ -170,7 +127,6 @@ const Edit_page = ({ ...others }) => {
                   name="course"
                   onBlur={handleBlur}
                   onChange={(e) => {
-                    setCourse(e.target.value);
                     handleChange(e);
                   }}
                   label="Change Course"
@@ -186,67 +142,44 @@ const Edit_page = ({ ...others }) => {
 
             {/* Office Hours Field */}
             {role === 'Professor' || role === 'TA' ? (
-              <Grid container spacing={2}>
-                <Grid item xs={5}>
-                  <FormControl fullWidth error={Boolean(touched.officeHoursStart && errors.officeHoursStart)} sx={{ ...theme.typography.customInput }}>
-                    <InputLabel htmlFor="outlined-adornment-officeHoursStart-login">Change Office Hours (From)</InputLabel>
-                    <Select
-                      id="outlined-adornment-officeHoursStart-login"
-                      value={values.officeHoursStart}
-                      name="officeHoursStart"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      label="Change Office Hours (From)"
-                    >
-                      <MenuItem value="">Select...</MenuItem>
-                      {officeHourOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {touched.officeHoursStart && errors.officeHoursStart && (
-                      <FormHelperText error id="standard-weight-helper-text-officeHoursStart-login">
-                        {errors.officeHoursStart}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={2} sx={{ textAlign: 'center', mt: '26px' }}>
-                  <Typography variant="body1" fontSize="1.6rem">
-                    TO
-                  </Typography>
-                </Grid>
-                <Grid item xs={5}>
-                  <FormControl fullWidth error={Boolean(touched.officeHoursEnd && errors.officeHoursEnd)} sx={{ ...theme.typography.customInput }}>
-                    <InputLabel htmlFor="outlined-adornment-officeHoursEnd-login">Change Office Hours (To)</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-officeHoursEnd-login"
-                      type="text"
-                      value={values.officeHoursEnd}
-                      name="officeHoursEnd"
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        setOfhr(e.target.value);
-                        handleChange(e);
-                      }}
-                      label="Change Office Hours (To)"
-                      inputProps={{}}
-                    />
-                    {touched.officeHoursEnd && errors.officeHoursEnd && (
-                      <FormHelperText error id="standard-weight-helper-text-officeHoursEnd-login">
-                        {errors.officeHoursEnd}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-              </Grid>
+              <>
+                <Select
+                  label="Select Day"
+                  onChange={(e) => setOfhr(prev => ({ ...prev, day: e.target.value }))}
+                  value={ofhr.day}
+                >
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(i => (
+                    <MenuItem value={i}>{i}</MenuItem>
+                  ))}
+                </Select>
+                <Select
+                  label="Select Day"
+                  onChange={(e) => setOfhr(prev => ({ ...prev, slot: e.target.value }))}
+                  value={ofhr.slot}
+                >
+                  {["8:30 - 9:45", "10:00 - 11:15", "11:30 - 12:45", "13:00 - 14:15", "14:30 - 15:45", "16:00 - 17:15"].map(i => (
+                    <MenuItem value={i}>{i}</MenuItem>
+                  ))}
+                </Select>
+                <Button variant="contained" onClick={() => {
+                  if (values.officeHours.filter(i => i.day === ofhr.day && i.slot === ofhr.slot).length === 0) {
+                    setFieldValue("officeHours", [...values.officeHours, ofhr])
+                    setOfhr({ day: "", slot: "" })
+                  }
+                }}>Add</Button>
+                <ul>
+                  {values.officeHours.map(i => (
+                    <li>{i.day} | {i.slot} <Button onClick={() =>
+                      setFieldValue("officeHours", values.officeHours.filter(o => JSON.stringify(o) !== JSON.stringify(i)))
+                    }>X</Button></li>
+                  ))}
+                </ul>
+              </>
             ) : null}
 
             <Box sx={{ mt: 2 }}>
               <AnimateButton>
                 <Button
-                  onClick={handleupdate}
                   disableElevation
                   disabled={isSubmitting}
                   fullWidth
@@ -261,7 +194,7 @@ const Edit_page = ({ ...others }) => {
             </Box>
           </form>
         )}
-      </Formik>
+      </Formik >
     </>
   );
 };
