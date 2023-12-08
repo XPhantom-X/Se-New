@@ -6,7 +6,7 @@ const httpService = async (config = {}) => {
     try {
         let { baseURL, endpoint, base, reqBody, jwt, successNotif, description } = { ...defaultConfig, ...config };
         if (endpoint === undefined || base === undefined) throw new Error("Endpoint not given");
-        if (!endpoint[2]) jwt = "Bearer "+store.getState().user.token;
+        if (!endpoint[2]) jwt = `Bearer ${store.getState().user.token}`;
         const res = await axios({
             method: endpoint[1],
             url: `${base}/${endpoint[0]}`,
@@ -19,9 +19,9 @@ const httpService = async (config = {}) => {
         if (status === 200) {
             if (responseCode === "00") {
                 if (successNotif) NotificationManager.success(description, "SUCCESS")
-                return data;
+                return data || true;
             }
-            else NotificationManager.warning(description, "ERROR")
+            else NotificationManager.warning(responseDescription, "ERROR")
         } else if (status === 400) NotificationManager.error(data.join("\n"));
         else NotificationManager.error(description);
         return false;
@@ -55,6 +55,8 @@ export const endpoints = {
         base: "auth",
         signUp: ["signUp", methods.post, true],
         login: ["login", methods.post, true],
+        updateProfile: ["updateProfile", methods.post],
+        forgetPassword:["forgetPassword", methods.post],
     },
     appointments: {
         base: "appointments",

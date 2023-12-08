@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // material-ui
@@ -19,7 +19,10 @@ import {
   OutlinedInput,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  FormLabel,
+  RadioGroup,
+  Radio
 } from '@mui/material';
 
 // third party
@@ -28,13 +31,14 @@ import { Formik } from 'formik';
 
 // project imports
 import useScriptRef from 'hooks/useScriptRef';
-import Google from 'assets/images/icons/social-google.svg';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+import httpService, { endpoints } from 'utils/httpService';
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -45,6 +49,8 @@ const FirebaseRegister = ({ ...others }) => {
   const customization = useSelector((state) => state.customization);
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
+  const [role, setRole] = useState();
+  const navigate = useNavigate();
 
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
@@ -74,7 +80,7 @@ const FirebaseRegister = ({ ...others }) => {
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <AnimateButton>
             <Button
               variant="outlined"
@@ -93,7 +99,7 @@ const FirebaseRegister = ({ ...others }) => {
               Sign up with Google
             </Button>
           </AnimateButton>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Box sx={{ alignItems: 'center', display: 'flex' }}>
             <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
@@ -128,6 +134,12 @@ const FirebaseRegister = ({ ...others }) => {
         initialValues={{
           email: '',
           password: '',
+          role: 'Student',
+          program: '',
+          batch: '',
+          coursesAssigned: '',
+          officeHours: '',
+          department: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -139,6 +151,15 @@ const FirebaseRegister = ({ ...others }) => {
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
+              console.log(values)
+              const res = await httpService({
+                base: endpoints.auth.base,
+                endpoint: endpoints.auth.signUp,
+                reqBody: values,
+                successNotif: true,
+                description: "Successfully signed up"
+              })
+              if(res)  navigate("/")
             }
           } catch (err) {
             console.error(err);
@@ -246,28 +267,63 @@ const FirebaseRegister = ({ ...others }) => {
               </FormControl>
             )}
 
-            <Grid container alignItems="center" justifyContent="space-between">
-              <Grid item>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked" color="primary" />
-                  }
-                  label={
-                    <Typography variant="subtitle1">
-                      Agree with &nbsp;
-                      <Typography variant="subtitle1" component={Link} to="#">
-                        Terms & Condition.
-                      </Typography>
-                    </Typography>
-                  }
-                />
-              </Grid>
-            </Grid>
-            {errors.submit && (
-              <Box sx={{ mt: 3 }}>
-                <FormHelperText error>{errors.submit}</FormHelperText>
-              </Box>
+            <FormControl component="fieldset" fullWidth>
+              <FormLabel component="legend">Role</FormLabel>
+              <RadioGroup aria-label="role" name="role" value={values.role} onChange={handleChange}>
+                <FormControlLabel value="Professor" control={<Radio />} label="Professor" />
+                <FormControlLabel value="TA" control={<Radio />} label="TA" />
+                <FormControlLabel value="Student" control={<Radio />} label="Student" />
+              </RadioGroup>
+            </FormControl>
+
+            {(values.role === 'Student' || values.role === 'TA') && (
+              <>
+                <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+                  <InputLabel htmlFor="outlined-adornment-program">Program</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-program"
+                    type="text"
+                    value={values.program}
+                    name="program"
+                    onChange={handleChange} />
+                </FormControl>
+
+                <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+                  <InputLabel htmlFor="outlined-adornment-batch">Batch</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-batch"
+                    type="number"
+                    value={values.batch}
+                    name="batch"
+                    onChange={handleChange} />
+                </FormControl>
+              </>
             )}
+
+            {(values.role === 'Professor' || values.role === 'TA') && (
+              <>
+                <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+                  <InputLabel htmlFor="outlined-adornment-department">Department</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-department"
+                    type="text"
+                    value={values.department}
+                    name="department"
+                    onChange={handleChange} />
+                </FormControl>
+
+                <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+                  <InputLabel htmlFor="outlined-adornment-coursesAssigned">Courses Assigned</InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-coursesAssigned"
+                    type="text"
+                    value={values.coursesAssigned}
+                    name="coursesAssigned"
+                    onChange={handleChange} />
+                </FormControl>
+              </>
+            )}
+
 
             <Box sx={{ mt: 2 }}>
               <AnimateButton>
